@@ -1,71 +1,86 @@
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const filteredCanvas = document.getElementById("filteredCanvas");
-const context = canvas.getContext("2d");
-const filteredContext = filteredCanvas.getContext("2d");
-const loadingIndicator = document.getElementById("loading");
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const filteredCanvas = document.getElementById('filteredCanvas');
+const context = canvas.getContext('2d');
+const filteredContext = filteredCanvas.getContext('2d');
+const loadingIndicator = document.getElementById('loading');
 let currentStream = null;
 let isFrontCamera = true;
+const ORIGINAL_WIDTH = 640; // Original canvas width
+const ORIGINAL_HEIGHT = 480; // Original canvas height
+
+// Function to set video and canvas dimensions
+function setDimensions() {
+    video.width = ORIGINAL_WIDTH;
+    video.height = ORIGINAL_HEIGHT;
+    canvas.width = ORIGINAL_WIDTH;
+    canvas.height = ORIGINAL_HEIGHT;
+    filteredCanvas.width = ORIGINAL_WIDTH;
+    filteredCanvas.height = ORIGINAL_HEIGHT;
+}
 
 // Access the user's camera
-function startCamera(facingMode = "user") {
-  if (currentStream) {
-    currentStream.getTracks().forEach((track) => track.stop());
-  }
-  loadingIndicator.style.display = "block"; // Show loading indicator
-  navigator.mediaDevices
-    .getUserMedia({ video: { facingMode } })
-    .then((stream) => {
-      currentStream = stream;
-      video.srcObject = stream;
-    })
-    .catch((err) => {
-      console.error("Error accessing camera: ", err);
-      loadingIndicator.style.display = "none"; // Hide loading indicator on error
-    })
-    .finally(() => {
-      loadingIndicator.style.display = "none"; // Hide loading indicator when done
-    });
+function startCamera(facingMode = 'user') {
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+    }
+    loadingIndicator.style.display = 'block'; // Show loading indicator
+    navigator.mediaDevices.getUserMedia({ video: { facingMode } })
+        .then(stream => {
+            currentStream = stream;
+            video.srcObject = stream;
+            setDimensions(); // Set dimensions when starting the camera
+        })
+        .catch(err => {
+            console.error("Error accessing camera: ", err);
+            loadingIndicator.style.display = 'none'; // Hide loading indicator on error
+        })
+        .finally(() => {
+            loadingIndicator.style.display = 'none'; // Hide loading indicator when done
+        });
 }
 
 startCamera();
 
 // Capture and apply pop-art effect
-document.getElementById("capturePhoto").addEventListener("click", () => {
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  applyPopArtEffect();
-  document.getElementById("savePhoto").style.display = "inline-block"; // Show save button
+document.getElementById('capturePhoto').addEventListener('click', () => {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    applyPopArtEffect();
+    document.getElementById('savePhoto').style.display = 'inline-block'; // Show save button
 });
 
 // Function to apply pop-art effect
 function applyPopArtEffect() {
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imageData.data;
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
 
-  // Simple pop-art effect
-  for (let i = 0; i < data.length; i += 4) {
-    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-    data[i] = avg < 128 ? 0 : 255;
-    data[i + 1] = avg < 128 ? 0 : 255;
-    data[i + 2] = avg < 128 ? 0 : 255;
-  }
+    // Simple pop-art effect
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = avg < 128 ? 0 : 255;
+        data[i + 1] = avg < 128 ? 0 : 255;
+        data[i + 2] = avg < 128 ? 0 : 255;
+    }
 
-  filteredContext.putImageData(imageData, 0, 0);
+    filteredContext.putImageData(imageData, 0, 0);
 }
 
 // Save image to user's device
-document.getElementById("savePhoto").addEventListener("click", () => {
-  const link = document.createElement("a");
-  link.href = filteredCanvas.toDataURL("image/png");
-  link.download = "SnapArtify_PopArtPhoto.png";
-  link.click();
+document.getElementById('savePhoto').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.href = filteredCanvas.toDataURL('image/png');
+    link.download = 'SnapArtify_PopArtPhoto.png';
+    link.click();
 });
 
 // Toggle camera between front and back
-document.getElementById("toggleCamera").addEventListener("click", () => {
-  isFrontCamera = !isFrontCamera;
-  startCamera(isFrontCamera ? "user" : "environment");
+document.getElementById('toggleCamera').addEventListener('click', () => {
+    isFrontCamera = !isFrontCamera;
+    startCamera(isFrontCamera ? 'user' : 'environment');
 });
+
+// Event listener to handle window resizing
+window.addEventListener('resize', setDimensions);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

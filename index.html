@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SnapArtify: Capture and apply a pop-art filter to your photos."
+    />
+    <meta
+      name="keywords"
+      content="photo filter, pop-art photo, photo effect, capture, SnapArtify"
+    />
+    <meta name="author" content="Charan Teja B S" />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Link to the CSS file -->
+    <link rel="manifest" href="manifest.json" />
+    <!-- Link to the manifest file -->
+    <title>SnapArtify: Pop-Art Photo Filter</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SnapArtify: Pop-Art Photo Filter</h1>
+      <video id="video" autoplay></video>
+      <div class="button-group">
+        <button id="capturePhoto">Capture Photo</button>
+        <button id="toggleCamera">Switch Camera</button>
+      </div>
+      <div id="loading">Loading Camera...</div>
+      <!-- Loading indicator -->
+      <button id="savePhoto">Save Photo</button>
+      <canvas
+        id="canvas"
+        width="640"
+        height="480"
+        style="display: none"
+      ></canvas>
+      <canvas id="filteredCanvas" width="640" height="480"></canvas>
+    </div>
+    <script src="script.js"></script>
+    <!-- Link to the JavaScript file -->
+  </body>
+</html>

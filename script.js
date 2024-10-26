@@ -6,17 +6,16 @@ const filteredContext = filteredCanvas.getContext('2d');
 const loadingIndicator = document.getElementById('loading');
 let currentStream = null;
 let isFrontCamera = true;
-const ORIGINAL_WIDTH = 640; // Original canvas width
-const ORIGINAL_HEIGHT = 480; // Original canvas height
+const SQUARE_SIZE = 640; // Set square dimensions
 
 // Function to set video and canvas dimensions
 function setDimensions() {
-    video.width = ORIGINAL_WIDTH;
-    video.height = ORIGINAL_HEIGHT;
-    canvas.width = ORIGINAL_WIDTH;
-    canvas.height = ORIGINAL_HEIGHT;
-    filteredCanvas.width = ORIGINAL_WIDTH;
-    filteredCanvas.height = ORIGINAL_HEIGHT;
+    video.width = SQUARE_SIZE;
+    video.height = SQUARE_SIZE;
+    canvas.width = SQUARE_SIZE;
+    canvas.height = SQUARE_SIZE;
+    filteredCanvas.width = SQUARE_SIZE;
+    filteredCanvas.height = SQUARE_SIZE;
 }
 
 // Access the user's camera
@@ -81,6 +80,7 @@ document.getElementById('toggleCamera').addEventListener('click', () => {
 
 // Event listener to handle window resizing
 window.addEventListener('resize', setDimensions);
+
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
